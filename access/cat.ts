@@ -2,8 +2,7 @@ import { createHash, randomUUID } from "crypto";
 import { mkdir, stat, writeFile, rm } from "fs/promises";
 import path from "path";
 
-import { getDataSource } from "@/data-source";
-import DBCat from "@/entity/Cat";
+import { Prisma, PrismaClient } from "@prisma/client";
 
 export interface Cat {
     id: string;
@@ -13,14 +12,15 @@ export interface Cat {
     filename: string;
     bytes?: string;
     hash: string;
-    created: Date;
-    updated: Date;
 }
 
-export type NewCat = Omit<
-    Omit<Omit<Omit<Cat, "hash">, "id">, "created">,
-    "updated"
-> & { bytes: string };
+export type NewCat = Omit<Omit<Cat, "hash">, "id"> & { bytes: string };
+
+export interface SearchFilter {
+    search: string;
+    rating: number[];
+    sort: string;
+}
 
 export const uploadFolder =
     process.env.UPLOAD_FOLDER ||
@@ -28,15 +28,9 @@ export const uploadFolder =
         ? path.join(process.cwd(), "uploads")
         : path.join(process.cwd(), "public", "uploads"));
 
-async function getRepo() {
-    const ds = await getDataSource();
-
-    return ds.getRepository(DBCat);
-}
+const client = new PrismaClient();
 
 export async function create(cat: NewCat) {
-    const catRepo = await getRepo();
-
     const hash = createHash("sha256");
 
     const bytes = new Uint8Array(Buffer.from(cat.bytes, "base64"));
@@ -61,19 +55,24 @@ export async function create(cat: NewCat) {
     }
     await writeFile(path.join(uploadFolder, filename), bytes);
 
-    const dbCat = await catRepo.save({
-        ...cat,
-        id: uuid,
-        hash: hash.read(),
-        filename: filename,
+    const dbCat = await client.cat.create({
+        data: {
+            title: cat.title,
+            description: cat.description,
+            rating: cat.rating,
+            id: uuid,
+            hash: hash.read(),
+            filename: filename,
+        },
     });
 
     return dbCat.id;
 }
 
 export async function get(id: string): Promise<Omit<Cat, "bytes"> | null> {
-    const catRepo = await getRepo();
-    const dbCat = await catRepo.findOneBy({ id });
+    const dbCat = await client.cat.findFirst({
+        where: { id },
+    });
 
     if (!dbCat) {
         return null;
@@ -86,8 +85,6 @@ export async function update(cat: Cat) {
     if (!cat.id) {
         return;
     }
-
-    const catRepo = await getRepo();
 
     const dbCat = await get(cat.id);
 
@@ -106,9 +103,9 @@ export async function update(cat: Cat) {
         hash.end();
         hash.setEncoding("base64");
 
-        const hashStr = hash.read();
+        hashStr = hash.read();
 
-        const filename = dbCat.id + "_" + cat.filename;
+        filename = dbCat.id + "_" + cat.filename;
 
         if (dbCat.hash !== hashStr) {
             await rm(path.join(uploadFolder, dbCat.filename));
@@ -116,23 +113,93 @@ export async function update(cat: Cat) {
         }
     }
 
-    await catRepo.update(cat.id, {
-        title: cat.title,
-        description: cat.description,
-        rating: cat.rating,
-        filename: cat.bytes ? filename : dbCat.filename,
-        hash: cat.bytes ? hashStr : dbCat.hash,
+    await client.cat.update({
+        where: {
+            id: cat.id,
+        },
+        data: {
+            title: cat.title,
+            description: cat.description,
+            rating: cat.rating,
+            filename: cat.bytes ? filename : dbCat.filename,
+            hash: cat.bytes ? hashStr : dbCat.hash,
+        },
     });
 }
 
-export async function getList() {
-    const catRepo = await getRepo();
+export async function getList(filter: SearchFilter) {
+    const filters: Prisma.CatWhereInput[] = [];
 
-    return catRepo.find();
+    if (filter.search) {
+        filters.push({
+            OR: [
+                {
+                    title: {
+                        contains: filter.search,
+                    },
+                },
+                {
+                    description: {
+                        contains: filter.search,
+                    },
+                },
+            ],
+        });
+    }
+
+    if (filter.rating) {
+        filters.push(
+            {
+                rating: {
+                    gte: filter.rating[0],
+                },
+            },
+            {
+                rating: {
+                    lte: filter.rating[1],
+                },
+            },
+        );
+    }
+
+    let orderBy: Prisma.CatOrderByWithRelationInput | undefined = undefined;
+
+    switch (filter.sort) {
+        case "alpha_asc":
+            orderBy = {
+                title: "asc",
+            };
+            break;
+        case "alpha_desc":
+            orderBy = {
+                title: "desc",
+            };
+            break;
+        case "rating_asc":
+            orderBy = {
+                rating: "asc",
+            };
+            break;
+        case "rating_desc":
+            orderBy = {
+                rating: "desc",
+            };
+            break;
+    }
+
+    return client.cat.findMany({
+        where:
+            filters.length === 1
+                ? filters[0]
+                : {
+                      AND: filters,
+                  },
+        orderBy,
+    });
 }
 
 export async function remove(id: string) {
-    const catRepo = await getRepo();
-
-    await catRepo.delete({ id });
+    await client.cat.delete({
+        where: { id },
+    });
 }

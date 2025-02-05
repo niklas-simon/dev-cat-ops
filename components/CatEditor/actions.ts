@@ -3,10 +3,10 @@
 import path from "path";
 
 import { redirect } from "next/navigation";
+import { Cat } from "@prisma/client";
 
 import { update, remove, create } from "@/access/cat";
 import { EditorCat } from "@/components/CatEditor/CatEditor";
-import Cat from "@/entity/Cat";
 
 export const onSave = async (
     cat: (Omit<Omit<Cat, "bytes">, "id"> & { id?: string }) | null,

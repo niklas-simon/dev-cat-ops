@@ -12,12 +12,13 @@ import CatCard from "../CatCard";
 
 import { cloudImport, onDelete, onSave } from "./actions";
 
-import { Cat, NewCat } from "@/access/cat";
+import { Cat } from "@/access/cat";
 
-export interface EditorCat extends Omit<Omit<NewCat, "filename">, "bytes"> {
+export interface EditorCat
+    extends Omit<Omit<Omit<Omit<Cat, "filename">, "bytes">, "id">, "hash"> {
     filename?: string;
     bytes?: string;
-    created?: Date;
+    id?: string;
 }
 
 export default function CatEditor({
@@ -154,7 +155,7 @@ export default function CatEditor({
                             if (
                                 !cat.filename ||
                                 !cat.filename.match(/.+\.(jpg|jpeg|png)/) ||
-                                (!cat.bytes?.length && !cat.created)
+                                (!cat.bytes?.length && !cat.id)
                             ) {
                                 setErrors({
                                     ...errors,

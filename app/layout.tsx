@@ -1,11 +1,6 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import { Navbar, NavbarBrand, NavbarContent } from "@heroui/navbar";
 import clsx from "clsx";
-import Image from "next/image";
-import Link from "next/link";
-import { Button } from "@heroui/button";
-import { Plus } from "react-feather";
 
 import { Providers } from "./providers";
 
@@ -46,33 +41,7 @@ export default function RootLayout({
                 <Providers
                     themeProps={{ attribute: "class", defaultTheme: "dark" }}
                 >
-                    <div className="relative flex flex-col w-screen items-center">
-                        <Navbar isBordered>
-                            <Link href="/">
-                                <NavbarBrand className="gap-4">
-                                    <Image
-                                        alt="Icon"
-                                        height={48}
-                                        src="/icon.png"
-                                        width={48}
-                                    />
-                                    <span className="text-xl hidden xs:inline">
-                                        Katzenspeicher
-                                    </span>
-                                </NavbarBrand>
-                            </Link>
-                            <NavbarContent justify="end">
-                                <Link href="/new">
-                                    <Button isIconOnly color="primary">
-                                        <Plus />
-                                    </Button>
-                                </Link>
-                            </NavbarContent>
-                        </Navbar>
-                        <div className="max-w-[1024px] w-full h-full p-4 gap-4 flex items-start justify-center">
-                            {children}
-                        </div>
-                    </div>
+                    {children}
                 </Providers>
             </body>
         </html>
