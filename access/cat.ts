@@ -23,10 +23,7 @@ export interface SearchFilter {
 }
 
 export const uploadFolder =
-    process.env.UPLOAD_FOLDER ||
-    (process.env.NODE_ENV === "production"
-        ? path.join(process.cwd(), "uploads")
-        : path.join(process.cwd(), "public", "uploads"));
+    process.env.UPLOAD_FOLDER || path.join(process.cwd(), "uploads");
 
 const client = new PrismaClient();
 

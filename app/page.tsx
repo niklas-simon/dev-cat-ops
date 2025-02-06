@@ -1,12 +1,9 @@
-import { readFile } from "fs/promises";
-import path from "path";
-
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import Link from "next/link";
 
 import CatCard from "@/components/CatCard";
-import { getList, uploadFolder } from "@/access/cat";
+import { getList } from "@/access/cat";
 import Navigation from "@/components/Navigation";
 import { defaultFilter } from "@/components/FilterMenu/defaults";
 
@@ -41,19 +38,7 @@ export default async function Page({
                     {list.length ? (
                         await Promise.all(
                             list.map(async (cat) => {
-                                const buffer = await readFile(
-                                    path.join(uploadFolder, cat.filename),
-                                );
-
-                                return (
-                                    <CatCard
-                                        key={cat.id}
-                                        cat={{
-                                            ...cat,
-                                            bytes: buffer.toString("base64"),
-                                        }}
-                                    />
-                                );
+                                return <CatCard key={cat.id} cat={cat} />;
                             }),
                         )
                     ) : (

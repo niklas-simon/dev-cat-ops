@@ -36,7 +36,7 @@ export default function CatCard({
                             src={
                                 cat.bytes
                                     ? `data:image/${path.extname(cat.filename).substring(1)};base64,${cat.bytes}`
-                                    : "/uploads/" + cat.filename
+                                    : "/images/" + cat.filename
                             }
                             width={256}
                         />

@@ -21,6 +21,25 @@ export interface EditorCat
     id?: string;
 }
 
+function file2Buffer(file: File) {
+    return new Promise<ArrayBuffer>(function (resolve, reject) {
+        const reader = new FileReader();
+        const readFile = function () {
+            const buffer = reader.result;
+
+            if (!(buffer instanceof ArrayBuffer)) {
+                reject("buffer was invalid");
+            }
+
+            resolve(buffer as ArrayBuffer);
+        };
+
+        reader.addEventListener("load", readFile);
+        reader.addEventListener("error", reject);
+        reader.readAsArrayBuffer(file);
+    });
+}
+
 export default function CatEditor({
     defaultCat,
     isNew,
@@ -98,7 +117,9 @@ export default function CatEditor({
                                         ...cat,
                                         filename: e.target.files[0].name,
                                         bytes: Buffer.from(
-                                            await e.target.files[0].bytes(),
+                                            await file2Buffer(
+                                                e.target.files[0],
+                                            ),
                                         ).toString("base64"),
                                     });
                                 }
