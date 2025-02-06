@@ -8,7 +8,6 @@ WORKDIR /app
 
 FROM base AS build
 COPY . /app
-COPY docker.env .env
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm exec prisma generate
 RUN pnpm build
