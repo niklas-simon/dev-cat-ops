@@ -77,6 +77,9 @@ importers:
       '@react-aria/visually-hidden':
         specifier: 3.8.18
         version: 3.8.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@types/prop-types':
+        specifier: ^15.7.14
+        version: 15.7.14
       clsx:
         specifier: 2.1.1
         version: 2.1.1
@@ -95,6 +98,9 @@ importers:
       next-themes:
         specifier: ^0.4.4
         version: 0.4.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      prop-types:
+        specifier: ^15.8.1
+        version: 15.8.1
       react:
         specifier: 18.3.1
         version: 18.3.1

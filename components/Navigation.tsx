@@ -11,7 +11,12 @@ export default function Navigation({ showFilter }: { showFilter?: boolean }) {
         <Navbar isBordered>
             <Link href="/">
                 <NavbarBrand className="gap-4">
-                    <Image alt="Icon" height={48} src="/icon.png" width={48} />
+                    <Image
+                        alt="Icon"
+                        height={48}
+                        src="/favicon.png"
+                        width={48}
+                    />
                     <span className="text-xl hidden xs:inline">
                         Katzenspeicher
                     </span>

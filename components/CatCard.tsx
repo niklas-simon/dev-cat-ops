@@ -1,11 +1,11 @@
 import path from "path";
 
 import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Star } from "react-feather";
 import Image from "next/image";
 import Link from "next/link";
 
 import { EditorCat } from "./CatEditor/CatEditor";
+import Paw from "./icons/Paw";
 
 export default function CatCard({
     cat,
@@ -22,8 +22,11 @@ export default function CatCard({
             <Card className="hover:bg-default-100 flex-1">
                 <CardHeader className="flex flex-row justify-between gap-4 w-full">
                     <span>{cat.title}</span>
-                    <div className="flex flex-row gap-1">
-                        <Star className="text-yellow-500" />
+                    <div className="flex flex-row gap-1 items-center">
+                        <Paw
+                            className="text-yellow-500 fill-yellow-500"
+                            size={16}
+                        />
                         {cat.rating}/10
                     </div>
                 </CardHeader>
