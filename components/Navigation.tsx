@@ -1,10 +1,10 @@
-import { Button } from "@heroui/button";
 import { Navbar, NavbarBrand, NavbarContent } from "@heroui/navbar";
 import { Plus } from "react-feather";
 import Image from "next/image";
 import Link from "next/link";
 
 import FilterMenu from "./FilterMenu/FilterMenu";
+import RedirectionButton from "./buttons/RedirectionButton";
 
 export default function Navigation({ showFilter }: { showFilter?: boolean }) {
     return (
@@ -19,11 +19,9 @@ export default function Navigation({ showFilter }: { showFilter?: boolean }) {
             </Link>
             <NavbarContent justify="end">
                 {showFilter && <FilterMenu />}
-                <Link href="/new">
-                    <Button isIconOnly color="primary">
-                        <Plus />
-                    </Button>
-                </Link>
+                <RedirectionButton isIconOnly color="primary" href="/new">
+                    <Plus />
+                </RedirectionButton>
             </NavbarContent>
         </Navbar>
     );
