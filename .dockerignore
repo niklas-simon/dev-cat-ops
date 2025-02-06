@@ -1,0 +1,13 @@
+.dockerignore
+
+# Not needed as we are bundling the whole app
+node_modules
+.next
+.git
+.env
+.prisma
+.vscode
+.gitignore
+docker-compose.yml
+Dockerfile
+README.md

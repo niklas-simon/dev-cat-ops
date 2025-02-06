@@ -1,0 +1,20 @@
+services:
+    devcatops:
+        image: devcatops
+        build: ./
+        restart: unless-stopped
+        env_file: .env
+        ports:
+            - 3000:3000
+        volumes:
+            - uploads:${UPLOAD_FOLDER}
+    mariadb:
+        image: mariadb
+        restart: unless-stopped
+        env_file: .env
+        volumes:
+        - data:/var/lib/mysql
+
+volumes:
+  uploads:
+  data:
