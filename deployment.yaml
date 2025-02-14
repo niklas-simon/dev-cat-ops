@@ -1,0 +1,124 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dev-cat-ops
+spec:
+  type: NodePort
+  ports:
+  - port: 3000
+    targetPort: 3000
+    nodePort: 80
+  selector:
+    app: dev-cat-ops
+
+---
+
+#apiVersion: networking.k8s.io/v1
+#kind: Ingress
+#metadata:
+#  name: dev-cat-ops
+#  annotations:
+#    cert-manager.io/cluster-issuer: letsencrypt
+#spec:
+#  ingressClassName: traefik
+#  rules:
+#    - host: cats.pein-gera.de
+#      http:
+#        paths:
+#          - path: /
+#            pathType: Prefix
+#            backend:
+#              service:
+#                name: dev-cat-ops
+#                port:
+#                  number: 3000
+#  tls:
+#    - hosts:
+#        - cats.pein-gera.de
+#      secretName: cats-pein-gera-de-tls
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-cat-ops
+spec:
+  selector:
+    matchLabels:
+      app: dev-cat-ops
+  template:
+    metadata:
+      labels:
+        app: dev-cat-ops
+    spec:
+      containers:
+      - image: ghcr.io/firebird4/dev-cat-ops:latest #gewuerznud3l/dev-cat-ops:latest
+        name: dev-cat-ops
+        volumeMounts:
+        - name: uploads
+          mountPath: /opt/devcatops/uploads
+        env:
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dev-cat-ops-db-password
+              key: password
+        - name: DATABASE_URL
+          value: "mysql://root:${DB_PASSWORD}@localhost:3306/dev-cat-ops"
+      - image: mariadb:lts
+        name: mariadb
+        env:
+        - name: MYSQL_DATABASE
+          value: dev-cat-ops
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dev-cat-ops-db-password
+              key: password
+        volumeMounts:
+        - name: db-data
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: db-data
+        persistentVolumeClaim:
+          claimName: dev-cat-ops-db-data
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: dev-cat-ops-uploads
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: node.kubernetes.io/instance-type # all nodes should have 'k3s'
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchExpressions:
+          - key: app
+            operator: Exists
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dev-cat-ops-db-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dev-cat-ops-uploads
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 1Gi
