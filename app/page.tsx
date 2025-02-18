@@ -21,14 +21,16 @@ export default async function Page({
 }) {
     const search = await searchParams;
 
-    const list = await getList({
+    const filter = {
         search: search.search || defaultFilter.search,
         rating: [
             Number(search.minRating) || defaultFilter.rating[0],
             Number(search.maxRating) || defaultFilter.rating[1],
         ],
         sort: search.sort || defaultFilter.sort,
-    });
+    };
+
+    const list = await getList(filter);
 
     return (
         <div className="relative flex flex-col w-screen items-center">
@@ -41,6 +43,15 @@ export default async function Page({
                                 return <CatCard key={cat.id} cat={cat} />;
                             }),
                         )
+                    ) : filter.search !== defaultFilter.search &&
+                      filter.rating[0] !== defaultFilter.rating[0] &&
+                      filter.rating[1] !== defaultFilter.rating[1] ? (
+                        <Card>
+                            <CardBody>
+                                Mit den aktuellen Filtereinstellungen konnten
+                                keine Katzenbilder gefunden werden
+                            </CardBody>
+                        </Card>
                     ) : (
                         <Card className="max-w-[420px]">
                             <CardHeader>

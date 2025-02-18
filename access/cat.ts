@@ -196,6 +196,14 @@ export async function getList(filter: SearchFilter) {
 }
 
 export async function remove(id: string) {
+    const dbCat = await get(id);
+
+    if (!dbCat) {
+        return;
+    }
+
+    await rm(dbCat.filename);
+
     await client.cat.delete({
         where: { id },
     });

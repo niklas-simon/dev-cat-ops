@@ -45,4 +45,29 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/arm/v6
+          platforms: linux/arm64,linux/amd64
+
+  deploy_to_k8s:
+    needs: "push_to_registry"
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      actions: read
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+      
+      - name: Set k8s context
+        uses: azure/k8s-set-context
+        id: context
+        with:
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+
+      - name: Deploy to k8s
+        uses: azure/k8s-deploy
+        with:
+          action: deploy
+          strategy: basic
+          namespace: dhge
+          manifests: deployment.yaml

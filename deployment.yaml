@@ -2,40 +2,39 @@ apiVersion: v1
 kind: Service
 metadata:
   name: dev-cat-ops
+  namespace: dhge
 spec:
-  type: NodePort
   ports:
   - port: 3000
-    targetPort: 3000
-    nodePort: 80
   selector:
     app: dev-cat-ops
 
 ---
 
-#apiVersion: networking.k8s.io/v1
-#kind: Ingress
-#metadata:
-#  name: dev-cat-ops
-#  annotations:
-#    cert-manager.io/cluster-issuer: letsencrypt
-#spec:
-#  ingressClassName: traefik
-#  rules:
-#    - host: cats.pein-gera.de
-#      http:
-#        paths:
-#          - path: /
-#            pathType: Prefix
-#            backend:
-#              service:
-#                name: dev-cat-ops
-#                port:
-#                  number: 3000
-#  tls:
-#    - hosts:
-#        - cats.pein-gera.de
-#      secretName: cats-pein-gera-de-tls
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dev-cat-ops
+  namespace: dhge
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: cats.pein-gera.de
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: dev-cat-ops
+                port:
+                  number: 3000
+  tls:
+    - hosts:
+        - cats.pein-gera.de
+      secretName: cats-pein-gera-de-tls
 
 ---
 
@@ -43,6 +42,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dev-cat-ops
+  namespace: dhge
 spec:
   selector:
     matchLabels:
@@ -53,7 +53,7 @@ spec:
         app: dev-cat-ops
     spec:
       containers:
-      - image: ghcr.io/firebird4/dev-cat-ops:latest #gewuerznud3l/dev-cat-ops:latest
+      - image: gewuerznud3l/dev-cat-ops:main
         name: dev-cat-ops
         volumeMounts:
         - name: uploads
@@ -101,6 +101,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: dev-cat-ops-db-data
+  namespace: dhge
 spec:
   accessModes:
     - ReadWriteOnce
@@ -115,6 +116,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: dev-cat-ops-uploads
+  namespace: dhge
 spec:
   accessModes:
     - ReadWriteOnce
