@@ -17,7 +17,9 @@ COPY package.json /app
 COPY pnpm-lock.yaml /app
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
-FROM node:20-alpine AS system-deps
+FROM --platform=linux/arm64/v8 arm64v8/node:20-alpine AS build-arm64
+FROM --platform=linux/amd64 node:20-alpine AS build-amd64
+FROM build-$BUILDARCH AS system-deps
 
 WORKDIR /app
 
@@ -40,4 +42,4 @@ ENV UPLOAD_FOLDER=/opt/devcatops/uploads
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 CMD wget -qO - http://localhost:3000/health
 
 EXPOSE 3000
-CMD pnpx prisma db push -- --skip-generate && pnpm start
+CMD [ "sh", "-c", "pnpx prisma db push -- --skip-generate && pnpm start" ]
