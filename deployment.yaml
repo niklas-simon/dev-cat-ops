@@ -55,6 +55,7 @@ spec:
       containers:
       - image: gewuerznud3l/dev-cat-ops:main
         name: dev-cat-ops
+        imagePullPolicy: Always
         volumeMounts:
         - name: uploads
           mountPath: /opt/devcatops/uploads
