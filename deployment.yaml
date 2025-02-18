@@ -53,7 +53,7 @@ spec:
         app: dev-cat-ops
     spec:
       containers:
-      - image: gewuerznud3l/dev-cat-ops:main
+      - image: gewuerznud3l/dev-cat-ops:latest
         name: dev-cat-ops
         imagePullPolicy: Always
         volumeMounts:
