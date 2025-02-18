@@ -66,7 +66,7 @@ spec:
               name: dev-cat-ops-db-password
               key: password
         - name: DATABASE_URL
-          value: "mysql://root:${DB_PASSWORD}@localhost:3306/dev-cat-ops"
+          value: "mysql://root:$(DB_PASSWORD)@localhost:3306/dev-cat-ops"
       - image: mariadb:lts
         name: mariadb
         env:

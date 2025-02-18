@@ -17,9 +17,9 @@ COPY package.json /app
 COPY pnpm-lock.yaml /app
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
-FROM --platform=linux/arm64/v8 arm64v8/node:20-alpine AS build-arm64
+FROM --platform=linux/arm64 arm64v8/node:20-alpine AS build-arm64
 FROM --platform=linux/amd64 node:20-alpine AS build-amd64
-FROM build-$BUILDARCH AS system-deps
+FROM build-$TARGETARCH AS system-deps
 
 WORKDIR /app
 
