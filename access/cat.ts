@@ -189,8 +189,8 @@ export async function getList(filter: SearchFilter) {
             filters.length === 1
                 ? filters[0]
                 : {
-                      AND: filters,
-                  },
+                    AND: filters,
+                },
         orderBy,
     });
 }
@@ -202,7 +202,7 @@ export async function remove(id: string) {
         return;
     }
 
-    await rm(dbCat.filename);
+    await rm(path.join(uploadFolder, dbCat.filename));
 
     await client.cat.delete({
         where: { id },
