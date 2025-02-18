@@ -321,7 +321,7 @@ describe("Cat Access", () => {
             expect(prismaClientMock.cat.delete).toHaveBeenCalledWith({
                 where: { id: TEST_UUID },
             });
-            expect(rm).toHaveBeenCalledWith(path.join(uploadFolder, TEST_UUID));
+            expect(rm).toHaveBeenCalledWith(path.join(uploadFolder, TEST_UUID + "_cat.jpg"));
         });
 
         it("delete a cat by id that is not found in the database", async () => {
