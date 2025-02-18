@@ -189,8 +189,8 @@ export async function getList(filter: SearchFilter) {
             filters.length === 1
                 ? filters[0]
                 : {
-                    AND: filters,
-                },
+                      AND: filters,
+                  },
         orderBy,
     });
 }
