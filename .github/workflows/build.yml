@@ -68,9 +68,7 @@ jobs:
         uses: azure/k8s-set-context@v3
         id: context
         with:
-          method: service-account
-          k8s-url: https://pein-gera.de:6443
-          token: ${{ secrets.SA_TOKEN }}
+          kubeconfig: ${{ secrets.KUBECONFIG }}
 
       - name: Deploy to k8s
         uses: azure/k8s-deploy@v4
