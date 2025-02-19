@@ -1,8 +1,11 @@
 name: Publish Docker image
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - 'master'
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 jobs:
@@ -32,7 +35,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        uses: docker/metadata-action@v5
         with:
           images: gewuerznud3l/dev-cat-ops
           tags: |
@@ -65,7 +68,9 @@ jobs:
         uses: azure/k8s-set-context@v3
         id: context
         with:
-          kubeconfig: ${{ secrets.KUBECONFIG }}
+          method: service-account
+          k8s-url: https://pein-gera.de:6443
+          token: ${{ secrets.SA_TOKEN }}
 
       - name: Deploy to k8s
         uses: azure/k8s-deploy@v4
