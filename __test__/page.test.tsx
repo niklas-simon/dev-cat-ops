@@ -23,8 +23,8 @@ vi.mock('next/navigation', () => ({
 }));
 
 describe("Page Component", () => {
-  it("zeigt die leere Nachricht, wenn `getList` keine Katzen zurückgibt", async () => {
-    // `getList` soll ein leeres Array zurückgeben
+  it("shows empty message, if `getList` returns no cats", async () => {
+    // `getList` should return an empty array
     (getList as Mock).mockResolvedValue([]);
 
     render(await Page({ searchParams: Promise.resolve({}) }));
@@ -35,7 +35,7 @@ describe("Page Component", () => {
     });
   });
 
-  it("rendert die `CatCard`-Komponenten, wenn `getList` Katzen zurückgibt", async () => {
+  it("renders`CatCard` components, if `getList` returns cats", async () => {
     (getList as Mock).mockResolvedValue([
       { id: "1", title: "Miau" },
       { id: "2", title: "Schnurr" },
