@@ -40,6 +40,7 @@ export default function ConfirmationButton({
                             <ModalBody>{description}</ModalBody>
                             <ModalFooter className="gap-4">
                                 <Button
+                                    data-testid="cancel-button"
                                     isIconOnly
                                     color="primary"
                                     onPress={onClose}
@@ -47,6 +48,7 @@ export default function ConfirmationButton({
                                     <X />
                                 </Button>
                                 <RunningButton
+                                    data-testid="confirm-button"
                                     isIconOnly
                                     color="danger"
                                     delay={3000}
