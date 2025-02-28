@@ -34,6 +34,7 @@
     "@react-aria/ssr": "3.9.7",
     "@react-aria/visually-hidden": "3.8.18",
     "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/prop-types": "^15.7.14",
     "clsx": "2.1.1",
     "framer-motion": "11.13.1",
