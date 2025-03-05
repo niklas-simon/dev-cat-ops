@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [tsconfigPaths()],
   test: {
     globals: true, // Ermöglicht globale Test-APIs wie `describe`, `it`, `expect`
-    environment: "node", // Simuliert eine Browser-Umgebung für React/Next.js
+    environment: "jsdom", // Simuliert eine Browser-Umgebung für React/Next.js
     setupFiles: "vitest.setup.ts", // Falls du globale Mocks oder Setup benötigst
   },
 });

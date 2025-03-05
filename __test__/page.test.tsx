@@ -1,25 +1,24 @@
-// @vitest-environment jsdom
-import '@testing-library/jest-dom'; 
+import "@testing-library/jest-dom";
 
-import { describe, it, expect, vi, Mock} from "vitest";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { describe, it, expect, vi, Mock } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
 import Page from "@/app/page";
 import { getList } from "@/access/cat";
 
-// Mock für `getList`
+// Mock `getList`
 vi.mock("@/access/cat", () => ({
   getList: vi.fn(),
 }));
 
-vi.mock('next/navigation', () => ({
+vi.mock("next/navigation", () => ({
   useRouter: () => ({
     push: vi.fn(),
     replace: vi.fn(),
     prefetch: vi.fn().mockResolvedValue(undefined),
     refresh: vi.fn(),
   }),
-  usePathname: () => '/',
-  useSearchParams: () => new URLSearchParams(''),
+  usePathname: () => "/",
+  useSearchParams: () => new URLSearchParams(""),
 }));
 
 describe("Page Component", () => {
@@ -30,8 +29,18 @@ describe("Page Component", () => {
     render(await Page({ searchParams: Promise.resolve({}) }));
 
     await waitFor(() => {
-      expect(screen.getByText((content) => content.includes("Willkommen beim Katzenspeicher"))).toBeInTheDocument();
-      expect(screen.getByText((content) => content.includes("Im Moment ist der Katzenspeicher noch leer und nur Du kannst das ändern."))).toBeInTheDocument();
+      expect(
+        screen.getByText((content) =>
+          content.includes("Willkommen beim Katzenspeicher")
+        )
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText((content) =>
+          content.includes(
+            "Im Moment ist der Katzenspeicher noch leer und nur Du kannst das ändern."
+          )
+        )
+      ).toBeInTheDocument();
     });
   });
 
@@ -43,9 +52,13 @@ describe("Page Component", () => {
 
     render(await Page({ searchParams: Promise.resolve({}) }));
 
-     await waitFor(async () => {
-      expect(screen.getByText((content) => content.includes("Miau"))).toBeInTheDocument();
-      expect(screen.getByText((content) => content.includes("Schnurr"))).toBeInTheDocument();
-     });
+    await waitFor(async () => {
+      expect(
+        screen.getByText((content) => content.includes("Miau"))
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText((content) => content.includes("Schnurr"))
+      ).toBeInTheDocument();
+    });
   });
 });

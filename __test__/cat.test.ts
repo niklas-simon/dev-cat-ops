@@ -1,3 +1,5 @@
+// @vitest-environment node
+
 import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
 import path from "path";
 
