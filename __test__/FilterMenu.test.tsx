@@ -97,7 +97,6 @@ describe("FilterMenu", () => {
 
     await waitFor(() => {
       const expectedUrl = `/?search=kitten&minRating=${defaultFilter.rating[0]}&maxRating=${defaultFilter.rating[1]}&sort=${defaultFilter.sort}`;
-      // console.log("mockPush arguments:", mockPush.mock.calls);
       expect(mockPush).toHaveBeenCalledWith(encodeURI(expectedUrl));
     });
   });

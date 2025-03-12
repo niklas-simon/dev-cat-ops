@@ -20,7 +20,6 @@ describe("PromiseButton", () => {
     const button = screen.getByRole("button");
     fireEvent.click(button);
     expect(onPressMock).toHaveBeenCalled();
-    console.log("Button clicked");
 
     await waitFor(() => {
       const element = screen.getByTestId("success-icon");
