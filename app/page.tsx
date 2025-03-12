@@ -56,7 +56,7 @@ export default async function Page({
                         <Card className="max-w-[420px]">
                             <CardHeader>
                                 <h1 className="text-xl">
-                                    Wilkommen beim Katzenspeicher
+                                    Willkommen beim Katzenspeicher
                                 </h1>
                             </CardHeader>
                             <CardBody>

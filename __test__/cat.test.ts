@@ -1,4 +1,6 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+// @vitest-environment node
+
+import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
 import path from "path";
 
 import * as catService from "../access/cat";
@@ -71,7 +73,7 @@ describe("Cat Access", () => {
             };
 
             // Simulate that the upload folder exists.
-            (stat as unknown as vi.Mock).mockResolvedValue({
+            (stat as unknown as Mock).mockResolvedValue({
                 isDirectory: () => true,
             });
             // Simulate Prisma create returning a record with the given id.
@@ -99,7 +101,7 @@ describe("Cat Access", () => {
             };
 
             // Simulate stat throwing an error so that mkdir is called.
-            (stat as unknown as vi.Mock).mockRejectedValue(new Error("Not found"));
+            (stat as unknown as Mock).mockRejectedValue(new Error("Not found"));
             prismaClientMock.cat.create.mockResolvedValue({ id: TEST_UUID });
 
             // Act
