@@ -15,7 +15,7 @@ services:
         volumes:
         - data:/var/lib/mysql
     classifi-cat-ion:
-        image: classifi-cat-ion
+        image: gewuerznud3l/classifi-cat-ion
         ports:
             - 5000:5000
         restart: unless-stopped
