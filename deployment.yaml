@@ -67,6 +67,8 @@ spec:
               key: password
         - name: DATABASE_URL
           value: "mysql://root:$(DB_PASSWORD)@localhost:3306/dev-cat-ops"
+        - name: CLASSIFI_CAT_ION_URL
+          value: "http://classifi-cat-ion:5000"
       - image: mariadb:lts
         name: mariadb
         env:

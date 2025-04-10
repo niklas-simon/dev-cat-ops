@@ -14,6 +14,11 @@ services:
         env_file: .env
         volumes:
         - data:/var/lib/mysql
+    classifi-cat-ion:
+        image: classifi-cat-ion
+        ports:
+            - 5000:5000
+        restart: unless-stopped
 
 volumes:
   uploads:
