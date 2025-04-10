@@ -9,6 +9,8 @@ import { onSave, onDelete, cloudImport } from "../components/CatEditor/actions";
 
 import { create, update, remove } from "@/access/cat";
 
+vi.stubEnv("CLASSIFI_CAT_ION_URL", "some-url");
+
 // Mock dependencies
 vi.mock("next/navigation", () => ({
     redirect: vi.fn(),
@@ -19,6 +21,12 @@ vi.mock("@/access/cat", () => ({
     update: vi.fn(),
     remove: vi.fn(),
 }));
+
+global.fetch = vi.fn();
+
+function createFetchResponse(data: unknown) {
+    return { json: () => new Promise((resolve) => resolve(data)) };
+}
 
 describe("onSave", () => {
     beforeEach(() => {
@@ -45,11 +53,38 @@ describe("onSave", () => {
         };
 
         (create as Mock).mockResolvedValue("new-id");
+        (fetch as Mock).mockResolvedValue(
+            createFetchResponse({
+                cat_probability: 0.1,
+                is_cat: true,
+            }),
+        );
 
         await onSave(null, newCat, true);
 
         expect(create).toHaveBeenCalledWith(newCat);
         expect(redirect).toHaveBeenCalledWith("/new-id");
+    });
+
+    it("should return error because image is not a cat", async () => {
+        const newCat = {
+            title: "New Cat",
+            description: "A new cat",
+            rating: 5,
+            bytes: "data",
+            filename: "cat.jpg",
+        };
+
+        (fetch as Mock).mockResolvedValue(
+            createFetchResponse({
+                cat_probability: -0.1,
+                is_cat: false,
+            }),
+        );
+
+        const res = await onSave(null, newCat, true);
+
+        expect(res?.picture).toBe("Das Bild muss eine Katze enthalten");
     });
 
     it("should call update for an existing cat", async () => {
@@ -69,6 +104,13 @@ describe("onSave", () => {
             bytes: "new",
             filename: "new.jpg",
         };
+
+        (fetch as Mock).mockResolvedValue(
+            createFetchResponse({
+                cat_probability: 0.1,
+                is_cat: true,
+            }),
+        );
 
         await onSave(existingCat, newCat, false);
 
