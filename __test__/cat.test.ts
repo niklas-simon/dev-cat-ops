@@ -1,18 +1,20 @@
 // @vitest-environment node
 
-import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
 import path from "path";
-
-import * as catService from "../access/cat";
-import { PrismaClient } from "@prisma/client";
 import { mkdir, stat, writeFile, rm } from "fs/promises";
 import { createHash } from "crypto";
+
+import { PrismaClient } from "@prisma/client";
+import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
+
+import * as catService from "../access/cat";
 
 // --- Mocks Setup ---
 
 // Mock fs/promises methods
 vi.mock("fs/promises", async () => {
     const actual = await vi.importActual("fs/promises");
+
     return {
         ...actual,
         stat: vi.fn(),
@@ -33,21 +35,23 @@ vi.mock("@prisma/client", () => {
             delete: vi.fn(),
         },
     };
+
     return {
         PrismaClient: vi.fn(() => mPrismaClient),
     };
 });
 
 // Mock randomUUID to return always the same UUID
-const TEST_UUID: string = "550e8400-e29b-41d4-a716-446655440000"
+const TEST_UUID: string = "550e8400-e29b-41d4-a716-446655440000";
+
 vi.mock("crypto", async () => {
     const actual = await vi.importActual("crypto");
+
     return {
         ...actual,
         randomUUID: () => TEST_UUID,
     };
 });
-
 
 // --- Tests ---
 
@@ -87,7 +91,7 @@ describe("Cat Access", () => {
             expect(prismaClientMock.cat.create).toHaveBeenCalled();
             expect(writeFile).toHaveBeenCalledWith(
                 path.join(uploadFolder, TEST_UUID + "_cat.jpg"),
-                expect.any(Uint8Array)
+                expect.any(Uint8Array),
             );
         });
 
@@ -108,7 +112,9 @@ describe("Cat Access", () => {
             const id = await catService.create(newCat);
 
             // Check
-            expect(mkdir).toHaveBeenCalledWith(uploadFolder, { recursive: true });
+            expect(mkdir).toHaveBeenCalledWith(uploadFolder, {
+                recursive: true,
+            });
             expect(id).toBe(TEST_UUID);
         });
     });
@@ -184,8 +190,8 @@ describe("Cat Access", () => {
                     hash: existingCat.hash,
                 },
             });
-            expect(rm).not.toHaveBeenCalled()
-            expect(writeFile).not.toHaveBeenCalled()
+            expect(rm).not.toHaveBeenCalled();
+            expect(writeFile).not.toHaveBeenCalled();
         });
 
         it("update a cat and replace the file if new bytes are provided and the hash differs", async () => {
@@ -224,11 +230,13 @@ describe("Cat Access", () => {
 
             // Check
             // Expect the old file to be removed.
-            expect(rm).toHaveBeenCalledWith(path.join(uploadFolder, existingCat.filename));
+            expect(rm).toHaveBeenCalledWith(
+                path.join(uploadFolder, existingCat.filename),
+            );
             // Expect a new file to be written (with the new filename format).
             expect(writeFile).toHaveBeenCalledWith(
                 path.join(uploadFolder, TEST_UUID + "_newcat.jpg"),
-                expect.any(Uint8Array)
+                expect.any(Uint8Array),
             );
             // Ensure the Prisma update was called with the new hash and new filename.
             expect(prismaClientMock.cat.update).toHaveBeenCalledWith({
@@ -262,8 +270,8 @@ describe("Cat Access", () => {
 
             // Check
             expect(prismaClientMock.cat.update).not.toHaveBeenCalled();
-            expect(rm).not.toHaveBeenCalled()
-            expect(writeFile).not.toHaveBeenCalled()
+            expect(rm).not.toHaveBeenCalled();
+            expect(writeFile).not.toHaveBeenCalled();
         });
     });
 
@@ -323,7 +331,9 @@ describe("Cat Access", () => {
             expect(prismaClientMock.cat.delete).toHaveBeenCalledWith({
                 where: { id: TEST_UUID },
             });
-            expect(rm).toHaveBeenCalledWith(path.join(uploadFolder, TEST_UUID + "_cat.jpg"));
+            expect(rm).toHaveBeenCalledWith(
+                path.join(uploadFolder, TEST_UUID + "_cat.jpg"),
+            );
         });
 
         it("delete a cat by id that is not found in the database", async () => {

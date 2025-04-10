@@ -40,17 +40,17 @@ export default function ConfirmationButton({
                             <ModalBody>{description}</ModalBody>
                             <ModalFooter className="gap-4">
                                 <Button
-                                    data-testid="cancel-button"
                                     isIconOnly
                                     color="primary"
+                                    data-testid="cancel-button"
                                     onPress={onClose}
                                 >
                                     <X />
                                 </Button>
                                 <RunningButton
-                                    data-testid="confirm-button"
                                     isIconOnly
                                     color="danger"
+                                    data-testid="confirm-button"
                                     delay={3000}
                                     onPress={() => {
                                         onClose();
